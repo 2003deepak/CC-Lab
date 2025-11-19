@@ -31,11 +31,16 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           script: |
-            # Navigate to your project directory on the server (adjust path as needed)
-            cd /home/ubuntu/my-app || exit 1
-
-            # Pull the latest changes (if you have git installed on the server)
-            git pull origin main || exit 1
+            # Check if the project directory exists on the server
+            if [ ! -d "/home/ubuntu/my-app/.git" ]; then
+              echo "Directory doesn't exist. Cloning repository..."
+              git clone git@github.com:2003deepak/CC-Lab.git /home/ubuntu/my-app || { echo "Clone failed"; exit 1; }
+              cd /home/ubuntu/my-app || { echo "Directory not found after clone"; exit 1; }
+            else
+              echo "Directory exists. Pulling latest changes..."
+              cd /home/ubuntu/my-app || { echo "Directory not found"; exit 1; }
+              git pull origin main || { echo "Git pull failed"; exit 1; }
+            fi
 
             # Rebuild and restart the Docker container
             docker build -t my-node-app:latest .
