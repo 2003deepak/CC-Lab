@@ -10,6 +10,10 @@ app.get("/goodmorning", (req, res) => {
   res.send("Good Morning!");
 });
 
+app.get("/done", (req, res) => {
+  res.send("Thank You mam");
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
